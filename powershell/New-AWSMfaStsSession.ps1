@@ -5,6 +5,9 @@ param(
 	[Alias("s")]
     [string] $sessionName = "awsDefaultSession",
 	
+	[Alias("o")]
+    [switch] $outputHelper = $true,
+	
 	[Alias("d")]
     [int] $duration = 14400,
 
@@ -31,6 +34,13 @@ if ($help) {
     Write-Output ("`t     Alias: s")
     Write-Output ("`t     Example: .\{0}.ps1 -sessionName {1}" -f $MyInvocation.MyCommand.Name, $sessionName)
     Write-Output ("`t     Example: .\{0}.ps1 -s {1}" -f $MyInvocation.MyCommand.Name, $sessionName)
+    Write-Output ("`t ")
+    Write-Output ("`t outputHelper")
+    Write-Output ("`t     Switch to output the command to run to build the default local session.")
+    Write-Output ("`t     Default: {0}" -f $outputHelper)
+    Write-Output ("`t     Alias: o")
+    Write-Output ("`t     Example: .\{0}.ps1 -outputHelper {1}" -f $MyInvocation.MyCommand.Name, $outputHelper)
+    Write-Output ("`t     Example: .\{0}.ps1 -o {1}" -f $MyInvocation.MyCommand.Name, $outputHelper)
 
     return $false
 }
@@ -55,6 +65,12 @@ $session = Get-STSSessionToken -SerialNumber $serial -DurationInSeconds $duratio
 # Build and execute an expression to store the session into the specified global variable
 $expression = ("`$global:{0} = `$session" -f $sessionName)
 Invoke-Expression -Command $expression
+
+# Generate the statement for the user to run
+$retrieveGlobalSession = ("`$globalSession = `$global:{0}" -f $sessionName)
+$buildLocalSession = "`$session = @{'AccessKey' = `$globalSession.AccessKeyId;'SecretKey' = `$globalSession.SecretAccessKey;'SessionToken' = `$globalSession.SessionToken;}"
+Write-Host ("Run the following commands to build the default session variable.")
+Write-Host ("{0};{1};" -f $retrieveGlobalSession,$buildLocalSession)
 
 #True for success
 return $true
