@@ -85,6 +85,18 @@ if (!(Get-Module -ListAvailable -Name AWS.Tools.EC2) -or $force) {
     $changesMade = $true
 }
 
+# Check for modules required by this library
+if (!(Get-Module -ListAvailable -Name AWS.Tools.SecurityToken) -or $force) {
+    if($force) {
+        Install-Module -Name AWS.Tools.SecurityToken -AllowClobber -Force
+    } else {
+        Install-Module -Name AWS.Tools.SecurityToken
+    }
+
+    $changesMade = $true
+}
+
+
 if($changesMade) {
     Write-Output "Modules successfully installed and updated."
 }else {

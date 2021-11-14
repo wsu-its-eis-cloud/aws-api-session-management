@@ -70,7 +70,9 @@ Invoke-Expression -Command $expression
 $retrieveGlobalSession = ("`$globalSession = `$global:{0}" -f $sessionName)
 $buildLocalSession = "`$session = @{'AccessKey' = `$globalSession.AccessKeyId;'SecretKey' = `$globalSession.SecretAccessKey;'SessionToken' = `$globalSession.SessionToken;}"
 Write-Host ("Run the following commands to build the default session variable.")
+Write-Host ("")
 Write-Host ("{0};{1};" -f $retrieveGlobalSession,$buildLocalSession)
+Write-Host ("")
 
 #True for success
 return $true
