@@ -6,6 +6,7 @@ param(
     [Alias("h")]
     [switch] $help = $false
 )
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 if ($help) {
 	Write-Output ("Installs and manages packages used by this library.")
